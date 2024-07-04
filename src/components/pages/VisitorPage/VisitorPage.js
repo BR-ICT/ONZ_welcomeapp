@@ -530,6 +530,8 @@ const FilePage = (props) => {
 
   const handleClose2 = () => setIsModalOpen2(false);
 
+  const [isChecked, setIsChecked] = useState(false);
+
   const [visitorheader, setvisitorheader] = useState(initialvisitorheader);
 
   const dispatch = useDispatch();
@@ -651,6 +653,10 @@ const FilePage = (props) => {
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
+
   const closeModal1 = () => {
     setIsModalOpen1(false);
   };
@@ -716,7 +722,7 @@ const FilePage = (props) => {
                         outline: "none",
                       }}
                     >
-                      <Grid container spacing={2}>
+                      <Grid container>
                         <Grid item xs={12}>
                           <Box
                             sx={{
@@ -808,19 +814,40 @@ const FilePage = (props) => {
                               textAlign: "center",
                             }}
                           >
-                            <Typography
-                              id="modal-modal-description"
-                              sx={{ mt: 2 }}
+                            <div
+                              style={{
+                                padding: "20px",
+                                maxWidth: "400px",
+                                margin: "0 auto",
+                              }}
                             >
-                              <h2 style={(alignItems = "left")}>
+                              <h2>ยินยอมการใช้งานข้อมูลส่วนบุคคล</h2>
+                              <p>
                                 เพื่อให้บริการที่ดีที่สุด
-                              </h2>
-                              เราจำเป็นต้องเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลของท่าน
-                              รวมถึงรูปภาพที่ท่านอัปโหลดหรือถ่ายผ่านเว็บไซต์ของเรา
-                              โดยการใช้งานเว็บไซต์นี้
-                              ท่านยินยอมให้เราดำเนินการเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลของท่านตามข้อกำหนดของกฎหมายคุ้มครองข้อมูลส่วนบุคคล
-                              (PDPA)
-                            </Typography>
+                                เราจำเป็นต้องเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลของท่าน
+                                รวมถึงรูปภาพที่ท่านอัปโหลดหรือถ่ายผ่านเว็บไซต์ของเรา
+                                โดยการใช้งานเว็บไซต์นี้
+                                ท่านยินยอมให้เราดำเนินการเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลของท่านตามข้อกำหนดของกฎหมายคุ้มครองข้อมูลส่วนบุคคล
+                                (PDPA)
+                              </p>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  id="consentCheckbox"
+                                  checked={isChecked}
+                                  onChange={handleCheckboxChange}
+                                  style={{ marginRight: "10px" }}
+                                />
+                                <label htmlFor="consentCheckbox">
+                                  ฉันยินยอมให้เก็บรวบรวมและใช้ข้อมูลส่วนบุคคลของฉัน
+                                </label>
+                              </div>
+                            </div>
                             <br></br>
                             <br></br>
                             <Button
@@ -846,8 +873,9 @@ const FilePage = (props) => {
                             </Button>
 
                             <Button
+                              disabled={!isChecked}
                               style={{
-                                backgroundColor: "#e81e26",
+                                backgroundColor: isChecked ? "#e81e26" : "#ccc",
                                 color: "white",
                                 padding: "10px 20px",
                                 border: "none",
@@ -1138,7 +1166,7 @@ const FilePage = (props) => {
                     alignItems: "center",
                   }}
                 >
-                  {JSON.stringify(file)}
+                  {/* {JSON.stringify(file)} */}
                   <Grid item xs={12} spacing={1}>
                     <h2 style={{ color: "red" }}>Upload รูปถ่าย</h2>
                   </Grid>
@@ -1741,8 +1769,8 @@ const FilePage = (props) => {
               case "SUBMIT":
                 // alert("SUBMIT");
 
-                alert(file);
-                alert(blobfile);
+                // alert(file);
+                // alert(blobfile);
 
                 // alert(visitorheader.vID);
 

@@ -392,8 +392,10 @@ const FilePage = (props) => {
   let [imgSrc, setImgSrc] = useState("");
 
   useEffect(() => {
-    dispatch(operationdataActions.getOperationdata());
+    // dispatch(operationdataActions.getOperationdata());
     // alert("xxx " + operationdataReducer.result);
+
+    dispatch(operationdataActions.getOperationfilterdata(fromdate, todate));
   }, []);
 
   console.log(operationdataReducer.result);
@@ -448,7 +450,7 @@ const FilePage = (props) => {
             onClick={async () => {
               //todo
 
-              //alert(rowData.IMAGE);
+              // alert(rowData.CARD);
 
               setvisitorheader({
                 ...visitorheader,
@@ -456,6 +458,7 @@ const FilePage = (props) => {
                 vImage: rowData.IMAGE,
                 vMeetdate: rowData.DATE,
                 vMeettime: rowData.TIME,
+                vRemark: rowData.REMARK,
               });
 
               console.log(visitorheader.vImage);
@@ -472,12 +475,14 @@ const FilePage = (props) => {
                 ...visitordialog,
                 vCard: rowData.CARD,
                 vRoom: rowData.ROOM,
+                vEmployee: rowData.EMP,
+                vEmployeedialog: rowData.EMP,
               });
 
               if (rowData.STATUS == "50") {
                 setUpdate1(false);
               } else if (rowData.STATUS == "80") {
-                setUpdate1(false);
+                setUpdate1(true);
               } else {
                 setUpdate1(true);
               }
@@ -777,7 +782,7 @@ const FilePage = (props) => {
             : item.STATUS == "15"
             ? "CHECKIN"
             : item.STATUS == "20"
-            ? "SENDMAIL"
+            ? "Wait for Acknowlege"
             : item.STATUS == "30"
             ? "IN　PROCESS..."
             : item.STATUS == "40"
@@ -823,6 +828,8 @@ const FilePage = (props) => {
                 ? false
                 : rowData.STATUS == "20"
                 ? false
+                : rowData.STATUS == "80"
+                ? false
                 : true
             }
             variant="contained"
@@ -854,7 +861,10 @@ const FilePage = (props) => {
                   )
                 );
 
-                await dispatch(operationdataActions.getOperationdata());
+                // await dispatch(operationdataActions.getOperationdata());
+                await dispatch(
+                  operationdataActions.getOperationfilterdata(fromdate, todate)
+                );
 
                 alert("Send email completed");
                 setLoadtable(false);
@@ -914,7 +924,10 @@ const FilePage = (props) => {
               formData.append("vStatuscheck", "CHECKOUT");
               //alert(JSON.stringify(formData));
               await dispatch(CheckoutActions.checkOut(formData));
-              await dispatch(operationdataActions.getOperationdata());
+              // await dispatch(operationdataActions.getOperationdata());
+              await dispatch(
+                operationdataActions.getOperationfilterdata(fromdate, todate)
+              );
             }}
           >
             CHECKOUT
@@ -966,6 +979,7 @@ const FilePage = (props) => {
     vMeetdate: "-",
     vMeettime: "-",
     vEmail: "",
+    vRemark: "",
   };
 
   const initialvisitordialog = {
@@ -1261,6 +1275,38 @@ const FilePage = (props) => {
                         />
                       </Box>
                     </Grid>
+                    <Grid item xs={12}>
+                      <Box
+                        sx={{
+                          color: "primary.contrastText",
+                          p: 2,
+                          textAlign: "center",
+                        }}
+                      >
+                        <TextField
+                          required
+                          fullWidth
+                          multiline
+                          rows={4}
+                          size="small"
+                          variant="outlined"
+                          id="vRemark"
+                          label="Remark"
+                          SelectProps={{
+                            native: true,
+                          }}
+                          // helperText="Please select your order"
+                          value={visitorheader.vRemark}
+                          values={(values.vReason = visitorheader.vRemark)}
+                          onChange={(event) => {
+                            setvisitorheader({
+                              ...visitorheader,
+                              vRemark: event.target.value,
+                            });
+                          }}
+                        ></TextField>
+                      </Box>
+                    </Grid>
 
                     <Grid item xs={12}>
                       <Box
@@ -1424,6 +1470,8 @@ const FilePage = (props) => {
                               formData.append("vCard", visitordialog.vCard);
                               formData.append("vRoom", visitordialog.vRoom);
                               formData.append("vEmail", visitordialog.vEmail);
+                              formData.append("vRemark", visitorheader.vRemark);
+
                               formData.append(
                                 "vEmployeedialog",
                                 visitordialog.vEmployeedialog
@@ -1436,11 +1484,17 @@ const FilePage = (props) => {
                                 );
 
                                 await dispatch(
-                                  operationdataActions.getOperationdata()
+                                  roomcardActions.updateEMP(formData)
                                 );
 
+                                // await dispatch(
+                                //   operationdataActions.getOperationdata()
+                                // );
                                 await dispatch(
-                                  roomcardActions.updateEMP(formData)
+                                  operationdataActions.getOperationfilterdata(
+                                    fromdate,
+                                    todate
+                                  )
                                 );
 
                                 setLoadtable(false);
@@ -1473,6 +1527,7 @@ const FilePage = (props) => {
                                 "vEmployeedialog",
                                 visitordialog.vEmployeedialog
                               );
+                              formData.append("vRemark", visitorheader.vRemark);
 
                               // formData.append("vEmployee",visitorheader.vEmployee);
                               formData.append("vID", idoperator);
@@ -1486,8 +1541,14 @@ const FilePage = (props) => {
                                   roomcardActions.updateEMP(formData)
                                 );
 
+                                // await dispatch(
+                                //   operationdataActions.getOperationdata()
+                                // );
                                 await dispatch(
-                                  operationdataActions.getOperationdata()
+                                  operationdataActions.getOperationfilterdata(
+                                    fromdate,
+                                    todate
+                                  )
                                 );
 
                                 await dispatch(
